@@ -4,20 +4,18 @@
 # Library
 library (tidyverse)
 library (folderfun)
+library (readr)
 
 # Designating folder functions with paths 
 setff ("plots", "/Dharma/Ideas&Projects/Academic/Projects/COVID19_StateInterventions/Code/Github_DVRN/
        2---Effect-of-State-Level-Interventions-on-Transmission-Dynamics-in-the-US/CountyNPI_JHU/Plots")
 
 # Database: JHU COVID19 County NPI database
+NPI_County_JHU <- read_csv("ConstituentDatabases/NPI_County_JHU.csv")
 
-
-# Subset database with mandated and statewide policies
-MandatedStatewideNPI <- USstatesCov19distancingpolicy %>% filter (Mandate>0.1, StateWide>0.1)
-
-# Find, plot, and print the number of duplicate NPIs in every state
-DuplicateState <- MandatedStatewideNPI %>% group_by(StateName, StatePolicy) %>% filter(n() > 1)
-ggplot (DuplicateState, aes (x=StatePolicy)) +
+# Find, plot, and print the number of duplicate NPIs in every state/county
+DuplicateCounty <- NPI_County_JHU %>% group_by(AREA_NAME) %>% filter(n() > 1)
+ggplot (DuplicateCounty, aes (x=StatePolicy)) +
   geom_bar() + ggtitle ("Duplicate NPIs") + 
   ggsave ("DuplicateStateNPI.pdf", path = "plots", width = 10, height = 10)
 
