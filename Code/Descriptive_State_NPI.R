@@ -3,12 +3,7 @@
 
 # Library
 library (tidyverse)
-library (folderfun)
 library(readr)
-
-# Designating folder functions with paths 
-setff ("plots", "/Dharma/Ideas&Projects/Academic/Projects/COVID19_StateInterventions/Code/Github_DVRN/
-       2---Effect-of-State-Level-Interventions-on-Transmission-Dynamics-in-the-US/Plots/NPIStateWSU")
 
 # Database: WSA COVID19 State NPI database
 NPI_State_WSU <- read_csv("ConstituentDatabases/NPI_State_WSU.csv")
@@ -22,18 +17,17 @@ DuplicateStateNPI <- as.data.frame (sort(table(DuplicateState$StatePolicy), decr
 names (DuplicateStateNPI) <- c("StatePolicy", "Freq")  
 ggplot (DuplicateStateNPI, aes (x=StatePolicy, y=Freq)) +
   geom_bar(stat="identity") + ggtitle ("Duplicate NPIs") + 
-  ggsave ("DuplicateStateNPI.pdf", path = "plots", width = 10, height = 10)
-
+  ggsave ("DuplicateStateNPI.pdf", path = "Plots/NPIStateWSU", width = 10, height = 10)
 # The duplicate NPI's are not true duplicates. 
 # They are just different NPI's under that category. 
 # E.g.: Gath Rest may be mentioned more than once because of different group sizes. 
 
-# Ploting and printing univariate NPIs in ascending order
+# Ploting and printing univariate NPIs in descending order
 UnivariateNPI <- as.data.frame (sort(table(MandatedStatewideNPI$StatePolicy), decreasing = TRUE))
 names (UnivariateNPI) <- c("StatePolicy", "Freq")             
 ggplot (UnivariateNPI, aes (x=StatePolicy, y=Freq)) + 
   geom_bar(stat="identity") + ggtitle ("NPI Frequency") + 
-  ggsave ("Univariate_NPI.pdf", path = "plots", width = 20, height = 10)
+  ggsave ("Univariate_NPI.pdf", path = "Plots/NPIStateWSU", width = 20, height = 10)
 
 
 
