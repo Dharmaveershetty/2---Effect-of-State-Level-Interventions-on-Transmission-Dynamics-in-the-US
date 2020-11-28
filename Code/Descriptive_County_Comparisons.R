@@ -25,6 +25,7 @@ JHU_county <- NPI_County_JHU %>% filter (!((FIPS/1000) == round(FIPS/1000)))
 Hikma_county <- NPI_County_Hikma
 Keystone_state <- NPI_County_Keystone %>% filter (fips < 1000)
 Keystone_county <- NPI_County_Keystone %>% filter (fips > 1000)
+WSU_state <- NPI_State_WSU
 
 
 # Finding the number of unique counties in each database
@@ -50,4 +51,15 @@ nrow (UniqueHikma)
 UniqueKeystone <- as.data.frame (setdiff (setdiff (Keystone_county$fips, Hikma_county$fips), JHU_county$FIPS)) %>% rename (FIPS=1)
 nrow (UniqueKeystone)
 
+# Determining state-wise similarity between the databases that records state-wise data
+## Databases tested: WSU, JHU, and Keystone
+## NPI category used for testing: school closures
+WSU_state$FIPS <- (WSU_state$StateFIPS)*1000
+Keystone_state <- Keystone_state %>% rename (FIPS = fips) %>% FIPS*1000
 
+WSU_state$FIPS <- (WSU_state$StateFIPS)*1000
+State_School <- as.data.frame(intersect )
+
+  
+Intersect <- as.data.frame(intersect (intersect (JHU_county$FIPS, Hikma_county$fips), Keystone_county$fips)) %>% rename (FIPS=1)
+nrow (Intersect)
