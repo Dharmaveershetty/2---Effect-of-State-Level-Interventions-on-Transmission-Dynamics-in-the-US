@@ -1,7 +1,7 @@
 # DESCRIPTIVE VISUALIZATION: USA STATE NPI'S
 # WSU DATABASE
 
-# Library
+# General Libraries
 library(readr)
 library (tidyverse)
 
@@ -35,43 +35,19 @@ Keystone_county %>% distinct (county, state) %>% count ()
 
 
 # Compare common county FIPS across the three databases
-Intersect1 <- as.data.frame (intersect (NPI_County_JHU$FIPS, NPI_County_Hikma$fips))
-names (Intersect1) <- c("FIPS")
-Intersect <- as.data.frame (intersect (Intersect1$FIPS, NPI_County_Keystone$fips))
-names (Intersect) <- c("FIPS")
+Intersect <- as.data.frame(intersect (intersect (JHU_county$FIPS, Hikma_county$fips), Keystone_county$fips)) %>% rename (FIPS=1)
+nrow (Intersect)
 # (Check if there are any duplicates)
 Intersect %>% group_by(FIPS) %>% filter(n()>1)        
 # (No duplicates were found)
-# (These only pertain to county FIPS because the state FIPS were...)
-# (... designated with different values in the JHU and Keystone database...)
-# (... and thus, not selected in the intersection values)
-# (Common counties across the 3 databases = 544)
 
 
-# Number of unique county FIPS in the JHU database (not found in the other databases)
-UniqueJHU1 <- as.data.frame (setdiff (NPI_County_JHU$FIPS, NPI_County_Hikma$fips))
-names (UniqueJHU1) <- c("FIPS")
-UniqueJHU2 <- as.data.frame (setdiff (UniqueJHU1$FIPS, NPI_County_Keystone$fips))
-names (UniqueJHU2) <- c("FIPS")
-# (Removing the state level rows which have '000' as their leading digits (FIPS))
-UniqueJHU2$FIPS2 <- UniqueJHU2$FIPS/1000
-UniqueJHU2$FIPS3 <- round(UniqueJHU2$FIPS2)
-UniqueJHU <- UniqueJHU2 %>% filter (!(FIPS3 == FIPS2))
-# (Unique counties in the JHU database = )
-nrow (UniqueJHU)
-
-# Number of unique county FIPS in the Hikma database (not found in the other databases)
-UniqueHikma1 <- as.data.frame (setdiff (NPI_County_Hikma$fips, NPI_County_JHU$FIPS))
-names (UniqueHikma1) <- c("FIPS")
-UniqueHikma <- as.data.frame (setdiff (UniqueHikma1$FIPS, NPI_County_Keystone$fips))
-names (UniqueHikma) <- c("FIPS")
-
-
-
-UniqueKeystone1 <- as.data.frame (setdiff (NPI_County_Keystone$fips, NPI_County_JHU$FIPS))
-names (UniqueKeystone1) <- c("FIPS")
-UniqueKeystone2 <- as.data.frame (setdiff (UniqueKeystone1$FIPS, NPI_County_Hikma$fips))
-names (UniqueKeystone2) <- c("FIPS")
-UniqueKeystone <- UniqueKeystone2 %>% filter (FIPS > 1000)
+# Number of unique county FIPS in the individual databases 
+UniqueJHU <- as.data.frame (setdiff (setdiff (JHU_county$FIPS, Hikma_county$fips), Keystone_county$fips)) %>% rename (FIPS=1)
+nrow (UniqueJHU)   
+UniqueHikma <- as.data.frame (setdiff (setdiff (Hikma_county$fips, Keystone_county$fips), JHU_county$FIPS)) %>% rename (FIPS=1)
+nrow (UniqueHikma)
+UniqueKeystone <- as.data.frame (setdiff (setdiff (Keystone_county$fips, Hikma_county$fips), JHU_county$FIPS)) %>% rename (FIPS=1)
+nrow (UniqueKeystone)
 
 
